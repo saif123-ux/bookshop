@@ -23,19 +23,25 @@
     "dev": "npx cds watch",
     "build": "npx cds build",
     "deploy": "npx cds deploy",
-    "render-build": "npm install && npx cds deploy"
+    "render-build": "npm install"
   },
   "cds": {
     "requires": {
       "db": {
-        "kind": "postgres"
+        "kind": "sqlite",
+        "credentials": {
+          "database": ":memory:"
+        }
       },
       "auth": {
         "kind": "dummy"
       },
       "[production]": {
         "db": {
-          "kind": "postgres"
+          "kind": "sqlite",
+          "credentials": {
+            "database": ":memory:"
+          }
         },
         "auth": {
           "kind": "dummy"
