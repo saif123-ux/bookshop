@@ -8,12 +8,18 @@ process.on('uncaughtException', (error) => {
 
 process.on('unhandledRejection', (reason, promise) => {
   console.error('Unhandled Rejection at:', promise, 'reason:', reason)
-  process.exit(1)
+  // Don't exit immediately for database errors
 })
 
-// Start the server
-cds.serve('all')
-  .then((server) => {
+// Initialize and start the server
+async function startServer() {
+  try {
+    // Connect to database first
+    const db = await cds.connect.to('db')
+    console.log('✅ Connected to SQLite database')
+    
+    // Then serve all services
+    const server = await cds.serve('all')
     console.log('✅ Server started on port', process.env.PORT || 4004)
     
     // Add health endpoint
@@ -23,10 +29,15 @@ cds.serve('all')
     
     // Add root endpoint
     server.get('/', (req, res) => {
-      res.send('Bookshop CAP Service is running! Use /browse for data.')
+      res.send('Bookshop CAP Service is running with SQLite! Use /browse for data.')
     })
-  })
-  .catch((error) => {
+    
+    return server
+    
+  } catch (error) {
     console.error('❌ Failed to start server:', error)
     process.exit(1)
-  })
+  }
+}
+
+startServer()
