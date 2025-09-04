@@ -8,20 +8,20 @@
   "dependencies": {
     "@cap-js/sqlite": "^2",
     "@sap/cds": "^9.2.1",
+    "@sap/cds-dk": ">=8",
     "express": "^4"
   },
   "engines": {
     "node": ">=20"
   },
   "devDependencies": {
-    "@cap-js/cds-types": "^0.13.0",
-    "@sap/cds-dk": ">=8"
+    "@cap-js/cds-types": "^0.13.0"
   },
   "scripts": {
-    "start": "cds run --with-mocks --in-memory",
-    "dev": "cds watch",
-    "build": "cds build",
-    "deploy": "cds deploy"
+    "start": "node server.js",
+    "dev": "npx cds watch",
+    "build": "npx cds build",
+    "deploy": "npx cds deploy"
   },
   "cds": {
     "requires": {
