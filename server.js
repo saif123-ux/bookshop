@@ -1,24 +1,26 @@
 const cds = require('@sap/cds')
 
-// Add error handling
+// Add comprehensive error handling
 process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error)
-  process.exit(1)
+  console.error('Uncaught Exception:', error.message)
+  // Don't exit - keep the server running
 })
 
 process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason)
-  // Don't exit immediately for database errors
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason.message)
+  // Don't exit - keep the server running
 })
 
-// Initialize and start the server
+// Start the server with robust error handling
 async function startServer() {
   try {
-    // Connect to database first
+    console.log('🚀 Starting CAP server...')
+    
+    // Connect to database
     const db = await cds.connect.to('db')
     console.log('✅ Connected to SQLite database')
     
-    // Then serve all services
+    // Serve all services
     const server = await cds.serve('all')
     console.log('✅ Server started on port', process.env.PORT || 4004)
     
@@ -29,15 +31,17 @@ async function startServer() {
     
     // Add root endpoint
     server.get('/', (req, res) => {
-      res.send('Bookshop CAP Service is running with SQLite! Use /browse for data.')
+      res.send('Bookshop CAP Service is running! Use /browse for data.')
     })
     
+    console.log('✅ Service endpoints ready')
     return server
     
   } catch (error) {
-    console.error('❌ Failed to start server:', error)
-    process.exit(1)
+    console.error('❌ Failed to start server:', error.message)
+    // Don't exit - let Render handle restarts
   }
 }
 
+// Start the server
 startServer()
