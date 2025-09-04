@@ -18,12 +18,11 @@
   "devDependencies": {
     "@cap-js/cds-types": "^0.13.0"
   },
- "scripts": {
-    "start": "node server.js",
+  "scripts": {
+    "start": "npx cds run --with-mocks --in-memory",
     "dev": "npx cds watch",
     "build": "npx cds build",
-    "deploy": "npx cds deploy",
-    "render-build": "npm install"
+    "deploy": "npx cds deploy"
   },
   "cds": {
     "requires": {

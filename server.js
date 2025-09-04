@@ -1,40 +1,22 @@
 const cds = require('@sap/cds')
+const PORT = process.env.PORT || 4004
 
-// Error handling - prevent server from exiting
-process.on('unhandledRejection', (reason, promise) => {
-  console.log('⚠️  Handled rejection:', reason.message)
-})
-
-process.on('uncaughtException', (error) => {
-  console.log('⚠️  Handled exception:', error.message)
-})
-
-// Start server with database connection
 async function startServer() {
   try {
-    console.log('🔗 Connecting to database...')
-    
-    // Connect to database first
     const db = await cds.connect.to('db')
-    console.log('✅ Database connected successfully')
+    console.log('✅ Database connected')
     
-    // Then start the server
     const server = await cds.serve('all')
-    console.log('✅ Server started on port', process.env.PORT || 4004)
+    console.log('✅ Server started on port', PORT)
     
-    // Health endpoints
     server.get('/health', (req, res) => res.status(200).send('OK'))
     server.get('/', (req, res) => res.send('Bookshop CAP Service is running!'))
     
-    console.log('🎉 Application is ready!')
-    
   } catch (error) {
-    console.log('⚠️  Server started with database issues, but still running')
-    console.log('Error:', error.message)
-    
-    // Start server even if database fails
+    console.log('⚠️ Error:', error.message)
+    // Keep server running even with errors
     const server = await cds.serve('all')
-    console.log('✅ Server started (without database) on port', process.env.PORT || 4004)
+    console.log('✅ Server started on port', PORT)
   }
 }
 
