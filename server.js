@@ -24,17 +24,14 @@ async function startServer() {
     await cds.connect.to('db')
     console.log('✅ Database connected')
 
-    // Force CAP to use Render’s port and 0.0.0.0
-    cds.options.server = { port: process.env.PORT || 4004, hostname: '0.0.0.0' }
-
-    // Start CAP server
+    // Start CAP server (this already creates an Express app and binds it)
     const app = await cds.server
-    console.log(`✅ Server is running on http://0.0.0.0:${process.env.PORT || 4004}`)
 
     // Add health endpoints
     app.get('/health', (req, res) => res.status(200).send('OK'))
     app.get('/', (req, res) => res.send('Bookshop CAP Service is running!'))
 
+    console.log(`✅ Server running on http://0.0.0.0:${process.env.PORT || 4004}`)
     console.log('🎉 Application is ready and will stay alive!')
   } catch (error) {
     console.log('⚠️  Startup error, but keeping process alive:', error.message)
