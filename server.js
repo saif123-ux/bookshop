@@ -21,11 +21,7 @@ cds.on('bootstrap', (app) => {
   app.get('/', (req, res) => res.send('Bookshop CAP Service is running!'))
 })
 
-// Start the CAP server
-cds.server // this will automatically bind to process.env.PORT on Render
-  .then(() => {
-    console.log(`✅ CAP server started on http://0.0.0.0:${process.env.PORT || 4004}`)
-  })
-  .catch((error) => {
-    console.log('⚠️  Startup error, but keeping process alive:', error.message)
-  })
+// Start the CAP server (synchronous in your CAP version)
+const app = cds.server
+
+console.log(`✅ CAP server started on http://0.0.0.0:${process.env.PORT || 4004}`)
