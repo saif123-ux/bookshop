@@ -21,20 +21,19 @@ async function startServer() {
     console.log('🚀 Starting CAP server...')
 
     // Connect to database
-    const db = await cds.connect.to('db')
+    await cds.connect.to('db')
     console.log('✅ Database connected')
 
-    // Start CDS server on Render’s port
-    const port = process.env.PORT || 4004
-    const server = await cds.server // this starts CAP’s Express app
+    // Force CAP to use Render’s port and 0.0.0.0
+    cds.options.server = { port: process.env.PORT || 4004, hostname: '0.0.0.0' }
 
-    server.listen(port, '0.0.0.0', () => {
-      console.log(`✅ Server is listening on http://0.0.0.0:${port}`)
-    })
+    // Start CAP server
+    const app = await cds.server
+    console.log(`✅ Server is running on http://0.0.0.0:${process.env.PORT || 4004}`)
 
-    // Add health endpoint
-    server.get('/health', (req, res) => res.status(200).send('OK'))
-    server.get('/', (req, res) => res.send('Bookshop CAP Service is running!'))
+    // Add health endpoints
+    app.get('/health', (req, res) => res.status(200).send('OK'))
+    app.get('/', (req, res) => res.send('Bookshop CAP Service is running!'))
 
     console.log('🎉 Application is ready and will stay alive!')
   } catch (error) {
